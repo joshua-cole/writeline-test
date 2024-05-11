@@ -1,0 +1,48 @@
+// This test shows efficiency lost using the WriteLine method.  WriteLine decreases efficiency because it writes into the console and redraws the console.
+// Initialize variables outside of timer that are used globally to avoid unnecessary actions during timing
+Random dice = new();
+int totalRuns = 1000000;
+List<int> firstRolls = [];
+List<int> secondRolls = [];
+
+// Start stopwatch for first test
+var watch = System.Diagnostics.Stopwatch.StartNew();
+
+// This is the test; rolls are added to list to make sure the roll variable is doing something on the second test
+int count = 0;
+while (count < totalRuns)
+{
+    int roll = dice.Next(1,7);
+    firstRolls.Add(roll);
+    Console.WriteLine(roll);        
+    count += 1;
+}
+
+watch.Stop();
+
+// Record milliseconds to a variable
+var writeLineElapsedMs = watch.ElapsedMilliseconds;
+
+// Clear stopwatch and restart for second test
+watch.Restart();
+
+// Exact same test, but without the WriteLine method
+count = 0;
+while (count < totalRuns)
+{
+    int roll = dice.Next(1,7);
+    secondRolls.Add(roll);
+    count += 1;
+}
+
+watch.Stop();
+
+// Record milliseconds to a new variable
+var noWriteElapsedMs = watch.ElapsedMilliseconds;
+
+// Efficiency difference
+decimal result = (decimal) noWriteElapsedMs / writeLineElapsedMs;
+
+Console.WriteLine($"Milliseconds elapsed without WriteLine: {noWriteElapsedMs}");
+Console.WriteLine($"Milliseconds elapsed using WriteLine: {writeLineElapsedMs}");
+Console.WriteLine($@"Efficiency difference (without/with): {result}");
